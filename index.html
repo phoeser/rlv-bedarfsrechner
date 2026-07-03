@@ -26,6 +26,7 @@
     --gelb-h: #F8E89D;    --gelb-d3: #F6CB00;
     --orange-h: #F7DCBB;  --orange-d3: #E87A16;
     --wg-hell: #EBE6D8;   --wg-haupt: #D9D5C7;  --wg-d2: #807E6F; --wg-d3: #545241;
+    --peach: #FBE9DC;     --sand: #FAF8F4;      --linie: #EFEBE4;
     --schwarz: #1a1a1a;
     --font-head: "Fedra Serif", Georgia, serif;
     --font-body: "FS Me", Arial, Helvetica, sans-serif;
@@ -42,58 +43,68 @@
   h1, h2, h3 { font-family: var(--font-head); font-weight: 700; line-height: 1.15; color: var(--dunkelrot); }
   a { color: var(--dunkelrot); }
 
-  /* ---------- Header ---------- */
+  /* ---------- Header (wie ergo.de: weiß, Logo + Claim) ---------- */
   .site-header {
     background: #fff;
-    border-bottom: 1px solid var(--wg-haupt);
+    border-bottom: 1px solid var(--linie);
     position: sticky; top: 0; z-index: 20;
   }
   .header-inner {
-    max-width: 1160px; margin: 0 auto; padding: 14px 20px;
-    display: flex; align-items: center; gap: 16px;
+    max-width: 1160px; margin: 0 auto; padding: 12px 20px 10px;
+    display: flex; align-items: center; gap: 20px;
   }
+  .logo-block { line-height: 1; }
   .logo {
     font-family: Arial, sans-serif;
-    font-weight: bold; font-size: 30px; letter-spacing: 0.5px;
+    font-weight: bold; font-size: 32px; letter-spacing: 0.5px;
     color: var(--ergo-rot);           /* ERGO Rot: nur Logo & Claim */
-    text-decoration: none; line-height: 1;
+    text-decoration: none; line-height: 1; display: block;
   }
-  .header-title { font-size: 14px; color: var(--wg-d3); border-left: 1px solid var(--wg-haupt); padding-left: 16px; }
+  .claim { font-size: 12.5px; font-weight: bold; color: var(--ergo-rot); margin-top: 3px; }
+  .header-title { font-size: 14px; color: var(--wg-d3); border-left: 1px solid var(--linie); padding-left: 20px; }
   .header-title strong { display: block; font-size: 16px; color: var(--schwarz); }
+  @media (max-width: 560px) { .header-title { display: none; } }
 
-  /* ---------- Hero ---------- */
-  .hero { max-width: 1160px; margin: 0 auto; padding: 40px 20px 8px; }
-  .hero h1 { font-size: 34px; margin-bottom: 12px; }
-  .hero p { max-width: 760px; color: var(--schwarz); }
-  .hero .accent-bar { display: flex; height: 6px; width: 220px; margin-top: 20px; }
-  .accent-bar span { flex: 1; }
-  .accent-bar .c1 { background: var(--gruen-h); }
-  .accent-bar .c2 { background: var(--gelb-h); }
-  .accent-bar .c3 { background: var(--eisblau-h); }
-  .accent-bar .c4 { background: var(--violett-h); }
+  /* ---------- Hero (cremefarbene Fläche wie ergo.de) ---------- */
+  .hero-band { background: var(--peach); }
+  .hero { max-width: 1160px; margin: 0 auto; padding: 44px 20px 40px; position: relative; }
+  .eyebrow { font-size: 14px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+  .hero h1 { font-size: 38px; margin-bottom: 12px; max-width: 700px; }
+  .hero p { max-width: 660px; color: var(--schwarz); font-size: 17px; line-height: 1.5; }
+  .badge {
+    position: absolute; right: 40px; top: 30px;
+    width: 116px; height: 116px; border-radius: 50%;
+    background: var(--dunkelrot); color: #fff;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    font-size: 14px; font-weight: bold; line-height: 1.3;
+    transform: rotate(8deg);
+    box-shadow: 0 6px 16px rgba(142, 0, 56, 0.3);
+  }
+  @media (max-width: 820px) { .badge { display: none; } .hero h1 { font-size: 30px; } }
 
   /* ---------- Layout ---------- */
   .main { max-width: 1160px; margin: 0 auto; padding: 24px 20px 60px; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 28px; align-items: start; }
   @media (max-width: 920px) { .main { grid-template-columns: 1fr; } }
 
   /* ---------- Formular ---------- */
-  .form-card { background: #fff; }
+  .form-card { background: transparent; }
   fieldset {
-    border: none; background: var(--wg-hell);
-    padding: 20px; margin-bottom: 18px;
+    border: 1px solid var(--linie); background: #fff; border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(84, 82, 65, 0.10);
+    padding: 24px; margin-bottom: 20px;
   }
   fieldset legend {
-    font-family: var(--font-head); font-size: 19px; color: var(--dunkelrot);
-    padding: 0 4px 0 0; margin-bottom: 4px; float: left; width: 100%;
+    font-family: var(--font-head); font-size: 20px; color: var(--dunkelrot);
+    padding: 0 4px 0 0; margin-bottom: 6px; float: left; width: 100%;
     line-height: 1.15;
   }
   fieldset legend + * { clear: both; }
   .row {
     display: grid; grid-template-columns: 220px 1fr; gap: 8px 16px;
-    align-items: center; padding: 9px 0; clear: both;
+    align-items: center; padding: 10px 0; clear: both;
   }
   @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
-  .row + .row { border-top: 1px solid #fff; }
+  .row + .row { border-top: 1px solid var(--sand); }
   label.lbl { font-size: 15px; }
   .hint-i {
     display: inline-block; width: 17px; height: 17px; border-radius: 50%;
@@ -110,22 +121,29 @@
   .ctrl { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
   input[type="number"], input[type="text"], select {
     font-family: var(--font-body); font-size: 15px; color: var(--schwarz);
-    border: 1px solid var(--wg-d2); background: #fff;
-    padding: 8px 10px; width: 110px;
+    border: 1px solid #C9C5BA; background: #fff; border-radius: 10px;
+    padding: 9px 12px; width: 112px;
+    transition: border-color 0.15s;
   }
   select { width: auto; max-width: 100%; }
-  input:focus, select:focus { outline: 2px solid var(--eisblau-d3); outline-offset: 1px; }
+  input:focus, select:focus {
+    outline: none; border-color: var(--dunkelrot);
+    box-shadow: 0 0 0 3px rgba(142, 0, 56, 0.15);
+  }
   .unit { font-size: 14px; color: var(--wg-d3); }
   input[type="range"] { flex: 1; min-width: 120px; accent-color: var(--dunkelrot); height: 22px; }
 
-  .radio-group { display: flex; gap: 6px; flex-wrap: wrap; }
+  .radio-group { display: flex; gap: 8px; flex-wrap: wrap; }
   .radio-group input { position: absolute; opacity: 0; }
   .radio-group label {
-    border: 1px solid var(--wg-d2); background: #fff; color: var(--schwarz);
-    padding: 7px 14px; font-size: 14px; cursor: pointer; user-select: none;
+    border: 2px solid #C9C5BA; background: #fff; color: var(--schwarz);
+    border-radius: 999px; padding: 7px 16px; font-size: 14px; font-weight: bold;
+    cursor: pointer; user-select: none;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
   }
+  .radio-group label:hover { border-color: var(--dunkelrot); color: var(--dunkelrot); }
   .radio-group input:checked + label { background: var(--dunkelrot); border-color: var(--dunkelrot); color: #fff; }
-  .radio-group input:focus-visible + label { outline: 2px solid var(--eisblau-d3); }
+  .radio-group input:focus-visible + label { outline: 2px solid var(--eisblau-d3); outline-offset: 2px; }
 
   .subrow { display: none; }
   .subrow.visible { display: grid; }
@@ -135,6 +153,7 @@
   @media (max-width: 920px) { .results { position: static; } }
   .kpi {
     background: var(--dunkelrot); color: #fff; padding: 22px 24px; margin-bottom: 14px;
+    border-radius: 12px; box-shadow: 0 4px 18px rgba(142, 0, 56, 0.25);
   }
   .kpi .kpi-label { font-size: 14px; }
   .kpi .kpi-value { font-family: var(--font-head); font-size: 38px; line-height: 1.15; }
@@ -145,33 +164,44 @@
   .kpi-grid .kpi { margin-bottom: 0; padding: 16px 18px; }
   .kpi-grid .kpi-value { font-size: 26px; }
 
-  .chart-card { background: var(--wg-hell); padding: 20px; margin: 14px 0; }
-  .chart-card h3 { font-size: 17px; margin-bottom: 10px; }
+  .chart-card {
+    background: #fff; border: 1px solid var(--linie); border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(84, 82, 65, 0.10);
+    padding: 20px; margin: 14px 0;
+  }
+  .chart-card h3 { font-size: 18px; margin-bottom: 10px; }
   .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; margin-top: 8px; }
   .legend span { display: inline-flex; align-items: center; gap: 6px; }
   .legend i { width: 14px; height: 14px; display: inline-block; }
 
-  table.detail { width: 100%; border-collapse: collapse; font-size: 14px; margin: 14px 0; }
-  table.detail th, table.detail td { text-align: left; padding: 8px 10px; }
+  table.detail {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    border-radius: 12px; overflow: hidden;
+    box-shadow: 0 4px 18px rgba(84, 82, 65, 0.10);
+    font-size: 14px; margin: 14px 0;
+  }
+  table.detail th, table.detail td { text-align: left; padding: 9px 12px; }
   table.detail thead th { background: var(--eisblau-d3); color: #fff; font-weight: bold; }
   table.detail tbody tr:nth-child(odd) { background: var(--eisblau-h); }
   table.detail tbody tr:nth-child(even) { background: #fff; }
   table.detail td:last-child, table.detail th:last-child { text-align: right; white-space: nowrap; }
   table.detail tr.total td { background: var(--wg-d3); color: #fff; font-weight: bold; }
 
-  .note-box { background: var(--gelb-h); color: var(--schwarz); padding: 14px 16px; font-size: 13.5px; margin: 14px 0; }
+  .note-box { background: var(--peach); color: var(--schwarz); border-radius: 10px; padding: 14px 18px; font-size: 13.5px; line-height: 1.5; margin: 14px 0; }
   .footnotes { font-size: 12.5px; color: var(--wg-d3); margin-top: 12px; }
   .footnotes p { margin-bottom: 6px; }
 
   .cta {
     display: block; text-align: center; background: var(--dunkelrot); color: #fff;
-    text-decoration: none; font-size: 17px; font-weight: bold; padding: 16px 20px; margin-top: 16px;
+    text-decoration: none; font-size: 17px; font-weight: bold; padding: 16px 28px; margin-top: 16px;
+    border-radius: 999px; box-shadow: 0 4px 12px rgba(142, 0, 56, 0.28);
+    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
   }
-  .cta:hover { background: #6d002b; }
+  .cta:hover { background: #6d002b; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(142, 0, 56, 0.34); }
   .cta small { display: block; font-weight: normal; font-size: 12.5px; margin-top: 3px; }
 
   /* ---------- Footer ---------- */
-  .site-footer { background: var(--wg-hell); border-top: 1px solid var(--wg-haupt); margin-top: 20px; }
+  .site-footer { background: var(--sand); border-top: 1px solid var(--linie); margin-top: 20px; }
   .footer-inner { max-width: 1160px; margin: 0 auto; padding: 24px 20px; font-size: 12.5px; color: var(--wg-d3); }
   .footer-inner p { margin-bottom: 6px; }
 </style>
@@ -180,7 +210,10 @@
 
 <header class="site-header">
   <div class="header-inner">
-    <a class="logo" href="#" aria-label="ERGO">ERGO</a>
+    <div class="logo-block">
+      <a class="logo" href="#" aria-label="ERGO">ERGO</a>
+      <div class="claim">Einfach, weil's wichtig ist.</div>
+    </div>
     <div class="header-title">
       <strong>Bedarfsrechner Risikolebensversicherung</strong>
       Hinterbliebenenabsicherung im Todesfall
@@ -188,15 +221,18 @@
   </div>
 </header>
 
-<section class="hero">
-  <h1>Wie gut ist Ihre Familie im Ernstfall abgesichert?</h1>
-  <p>
-    Im Todesfall sind die gesetzlichen Ansprüche aus der Sozialversicherung für Hinterbliebene
-    nur gering. Ermitteln Sie hier in wenigen Schritten Ihre monatliche Versorgungslücke und
-    das Kapital, das zur Absicherung Ihrer Familie erforderlich ist.
-  </p>
-  <div class="accent-bar" aria-hidden="true"><span class="c1"></span><span class="c2"></span><span class="c3"></span><span class="c4"></span></div>
-</section>
+<div class="hero-band">
+  <section class="hero">
+    <div class="eyebrow">Risikolebensversicherung</div>
+    <h1>Wie gut ist Ihre Familie im Ernstfall abgesichert?</h1>
+    <p>
+      Im Todesfall sind die gesetzlichen Ansprüche aus der Sozialversicherung für Hinterbliebene
+      nur gering. Ermitteln Sie hier in wenigen Schritten Ihre monatliche Versorgungslücke und
+      das Kapital, das zur Absicherung Ihrer Familie erforderlich ist.
+    </p>
+    <div class="badge" aria-hidden="true">In 2 Min.<br>zum<br>Ergebnis</div>
+  </section>
+</div>
 
 <main class="main">
   <!-- ==================== Eingaben ==================== -->
