@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="RLV Bedarfsrechner – Ermitteln Sie Ihre Versorgungslücke im Todesfall und das erforderliche Kapital für Ihre Risikolebensversicherung.">
+<title>RLV Bedarfsrechner – Wie hoch ist Ihr Absicherungsbedarf?</title>
+<style>
+  /* ============================================================
+     ERGO Corporate Design
+     Quelle: Brand Guide ERGO
+     - ERGO Rot #BF1528: ausschließlich Logo & Claim
+     - ERGO Dunkelrot #8E0038: Überschriften & wichtige Infos
+     - Gestaltungsfarben: Hauptfarbe + Dunkel 3
+     - Schriften: Fedra Serif (Headlines) / FS Me (Fließtext),
+       Ersatz: Georgia / Arial
+     - Zeilenabstand: Headlines ×1,15 · Fließtext ×1,4
+     - Keine kursiven Schriftschnitte
+     ============================================================ */
+  :root {
+    --ergo-rot: #BF1528;
+    --dunkelrot: #8E0038;
+    --gruen-h: #B5D5C1;   --gruen-d1: #8BC9AD;  --gruen-d3: #009284;
+    --eisblau-h: #CCEBED; --eisblau-d1: #A9DAE0; --eisblau-d3: #0F94A7;
+    --violett-h: #E4D6E4; --violett-d3: #B31767;
+    --gelb-h: #F8E89D;    --gelb-d3: #F6CB00;
+    --orange-h: #F7DCBB;  --orange-d3: #E87A16;
+    --wg-hell: #EBE6D8;   --wg-haupt: #D9D5C7;  --wg-d2: #807E6F; --wg-d3: #545241;
+    --schwarz: #1a1a1a;
+    --font-head: "Fedra Serif", Georgia, serif;
+    --font-body: "FS Me", Arial, Helvetica, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.4;
+    color: var(--schwarz);
+    background: #fff;
+  }
+  h1, h2, h3 { font-family: var(--font-head); font-weight: 700; line-height: 1.15; color: var(--dunkelrot); }
+  a { color: var(--dunkelrot); }
+
+  /* ---------- Header ---------- */
+  .site-header {
+    background: #fff;
+    border-bottom: 1px solid var(--wg-haupt);
+    position: sticky; top: 0; z-index: 20;
+  }
+  .header-inner {
+    max-width: 1160px; margin: 0 auto; padding: 14px 20px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .logo {
+    font-family: Arial, sans-serif;
+    font-weight: bold; font-size: 30px; letter-spacing: 0.5px;
+    color: var(--ergo-rot);           /* ERGO Rot: nur Logo & Claim */
+    text-decoration: none; line-height: 1;
+  }
+  .header-title { font-size: 14px; color: var(--wg-d3); border-left: 1px solid var(--wg-haupt); padding-left: 16px; }
+  .header-title strong { display: block; font-size: 16px; color: var(--schwarz); }
+
+  /* ---------- Hero ---------- */
+  .hero { max-width: 1160px; margin: 0 auto; padding: 40px 20px 8px; }
+  .hero h1 { font-size: 34px; margin-bottom: 12px; }
+  .hero p { max-width: 760px; color: var(--schwarz); }
+  .hero .accent-bar { display: flex; height: 6px; width: 220px; margin-top: 20px; }
+  .accent-bar span { flex: 1; }
+  .accent-bar .c1 { background: var(--gruen-h); }
+  .accent-bar .c2 { background: var(--gelb-h); }
+  .accent-bar .c3 { background: var(--eisblau-h); }
+  .accent-bar .c4 { background: var(--violett-h); }
+
+  /* ---------- Layout ---------- */
+  .main { max-width: 1160px; margin: 0 auto; padding: 24px 20px 60px; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 28px; align-items: start; }
+  @media (max-width: 920px) { .main { grid-template-columns: 1fr; } }
+
+  /* ---------- Formular ---------- */
+  .form-card { background: #fff; }
+  fieldset {
+    border: none; background: var(--wg-hell);
+    padding: 20px; margin-bottom: 18px;
+  }
+  fieldset legend {
+    font-family: var(--font-head); font-size: 19px; color: var(--dunkelrot);
+    padding: 0 4px 0 0; margin-bottom: 4px; float: left; width: 100%;
+    line-height: 1.15;
+  }
+  fieldset legend + * { clear: both; }
+  .row {
+    display: grid; grid-template-columns: 220px 1fr; gap: 8px 16px;
+    align-items: center; padding: 9px 0; clear: both;
+  }
+  @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
+  .row + .row { border-top: 1px solid #fff; }
+  label.lbl { font-size: 15px; }
+  .hint-i {
+    display: inline-block; width: 17px; height: 17px; border-radius: 50%;
+    background: var(--eisblau-d3); color: #fff; font-size: 12px; line-height: 17px;
+    text-align: center; cursor: help; margin-left: 6px; position: relative;
+  }
+  .hint-i .tip {
+    display: none; position: absolute; left: 50%; transform: translateX(-50%);
+    bottom: 24px; width: 240px; background: var(--wg-d3); color: #fff;
+    font-size: 13px; line-height: 1.4; padding: 10px 12px; z-index: 30; text-align: left;
+  }
+  .hint-i:hover .tip, .hint-i:focus .tip { display: block; }
+
+  .ctrl { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  input[type="number"], input[type="text"], select {
+    font-family: var(--font-body); font-size: 15px; color: var(--schwarz);
+    border: 1px solid var(--wg-d2); background: #fff;
+    padding: 8px 10px; width: 110px;
+  }
+  select { width: auto; max-width: 100%; }
+  input:focus, select:focus { outline: 2px solid var(--eisblau-d3); outline-offset: 1px; }
+  .unit { font-size: 14px; color: var(--wg-d3); }
+  input[type="range"] { flex: 1; min-width: 120px; accent-color: var(--dunkelrot); height: 22px; }
+
+  .radio-group { display: flex; gap: 6px; flex-wrap: wrap; }
+  .radio-group input { position: absolute; opacity: 0; }
+  .radio-group label {
+    border: 1px solid var(--wg-d2); background: #fff; color: var(--schwarz);
+    padding: 7px 14px; font-size: 14px; cursor: pointer; user-select: none;
+  }
+  .radio-group input:checked + label { background: var(--dunkelrot); border-color: var(--dunkelrot); color: #fff; }
+  .radio-group input:focus-visible + label { outline: 2px solid var(--eisblau-d3); }
+
+  .subrow { display: none; }
+  .subrow.visible { display: grid; }
+
+  /* ---------- Ergebnis ---------- */
+  .results { position: sticky; top: 80px; }
+  @media (max-width: 920px) { .results { position: static; } }
+  .kpi {
+    background: var(--dunkelrot); color: #fff; padding: 22px 24px; margin-bottom: 14px;
+  }
+  .kpi .kpi-label { font-size: 14px; }
+  .kpi .kpi-value { font-family: var(--font-head); font-size: 38px; line-height: 1.15; }
+  .kpi .kpi-sub { font-size: 13px; margin-top: 4px; }
+  .kpi2 { background: var(--gruen-d3); }
+  .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 480px) { .kpi-grid { grid-template-columns: 1fr; } }
+  .kpi-grid .kpi { margin-bottom: 0; padding: 16px 18px; }
+  .kpi-grid .kpi-value { font-size: 26px; }
+
+  .chart-card { background: var(--wg-hell); padding: 20px; margin: 14px 0; }
+  .chart-card h3 { font-size: 17px; margin-bottom: 10px; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; margin-top: 8px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 14px; height: 14px; display: inline-block; }
+
+  table.detail { width: 100%; border-collapse: collapse; font-size: 14px; margin: 14px 0; }
+  table.detail th, table.detail td { text-align: left; padding: 8px 10px; }
+  table.detail thead th { background: var(--eisblau-d3); color: #fff; font-weight: bold; }
+  table.detail tbody tr:nth-child(odd) { background: var(--eisblau-h); }
+  table.detail tbody tr:nth-child(even) { background: #fff; }
+  table.detail td:last-child, table.detail th:last-child { text-align: right; white-space: nowrap; }
+  table.detail tr.total td { background: var(--wg-d3); color: #fff; font-weight: bold; }
+
+  .note-box { background: var(--gelb-h); color: var(--schwarz); padding: 14px 16px; font-size: 13.5px; margin: 14px 0; }
+  .footnotes { font-size: 12.5px; color: var(--wg-d3); margin-top: 12px; }
+  .footnotes p { margin-bottom: 6px; }
+
+  .cta {
+    display: block; text-align: center; background: var(--dunkelrot); color: #fff;
+    text-decoration: none; font-size: 17px; font-weight: bold; padding: 16px 20px; margin-top: 16px;
+  }
+  .cta:hover { background: #6d002b; }
+  .cta small { display: block; font-weight: normal; font-size: 12.5px; margin-top: 3px; }
+
+  /* ---------- Footer ---------- */
+  .site-footer { background: var(--wg-hell); border-top: 1px solid var(--wg-haupt); margin-top: 20px; }
+  .footer-inner { max-width: 1160px; margin: 0 auto; padding: 24px 20px; font-size: 12.5px; color: var(--wg-d3); }
+  .footer-inner p { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="#" aria-label="ERGO">ERGO</a>
+    <div class="header-title">
+      <strong>Bedarfsrechner Risikolebensversicherung</strong>
+      Hinterbliebenenabsicherung im Todesfall
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Wie gut ist Ihre Familie im Ernstfall abgesichert?</h1>
+  <p>
+    Im Todesfall sind die gesetzlichen Ansprüche aus der Sozialversicherung für Hinterbliebene
+    nur gering. Ermitteln Sie hier in wenigen Schritten Ihre monatliche Versorgungslücke und
+    das Kapital, das zur Absicherung Ihrer Familie erforderlich ist.
+  </p>
+  <div class="accent-bar" aria-hidden="true"><span class="c1"></span><span class="c2"></span><span class="c3"></span><span class="c4"></span></div>
+</section>
+
+<main class="main">
+  <!-- ==================== Eingaben ==================== -->
+  <form class="form-card" id="calc-form" autocomplete="off">
+
+    <fieldset>
+      <legend>Zur Person</legend>
+      <div class="row">
+        <label class="lbl" for="alter">Alter</label>
+        <div class="ctrl">
+          <input type="number" id="alter" min="18" max="60" step="1" value="29"> <span class="unit">Jahre</span>
+          <input type="range" id="alter-r" min="18" max="60" step="1" value="29" aria-hidden="true" tabindex="-1">
+        </div>
+      </div>
+      <div class="row">
+        <span class="lbl">Raucher/Nichtraucher</span>
+        <div class="radio-group" role="radiogroup" aria-label="Raucherstatus">
+          <input type="radio" name="raucher" id="r1" value="raucher"><label for="r1">Raucher</label>
+          <input type="radio" name="raucher" id="r2" value="nr12"><label for="r2">Nichtraucher mind. 12 Monate</label>
+          <input type="radio" name="raucher" id="r3" value="nr10" checked><label for="r3">Nichtraucher mind. 10 Jahre</label>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Familie</legend>
+      <div class="row">
+        <label class="lbl" for="ep-alter">Alter des Ehepartners</label>
+        <div class="ctrl">
+          <input type="number" id="ep-alter" min="18" max="80" step="1" value="29"> <span class="unit">Jahre</span>
+          <input type="range" id="ep-alter-r" min="18" max="80" step="1" value="29" aria-hidden="true" tabindex="-1">
+        </div>
+      </div>
+      <div class="row">
+        <label class="lbl" for="ehejahr">Jahr der Eheschließung</label>
+        <div class="ctrl">
+          <input type="number" id="ehejahr" min="1960" max="2026" step="1" value="2019">
+        </div>
+      </div>
+      <div class="row">
+        <span class="lbl">Haben Sie Kinder?</span>
+        <div class="radio-group" role="radiogroup" aria-label="Kinder">
+          <input type="radio" name="kinder" id="k1" value="ja"><label for="k1">ja</label>
+          <input type="radio" name="kinder" id="k2" value="nein" checked><label for="k2">nein</label>
+        </div>
+      </div>
+      <div class="row subrow" id="row-kinderzahl">
+        <label class="lbl" for="kinderzahl">Anzahl der Kinder</label>
+        <div class="ctrl">
+          <input type="number" id="kinderzahl" min="1" max="10" step="1" value="1">
+        </div>
+      </div>
+      <div class="row subrow" id="row-kinder26">
+        <label class="lbl" for="kinder26">davon jünger als 26<span class="hint-i" tabindex="0">i<span class="tip">Kinder unter 26 Jahren erhalten im Todesfall eine Waisenrente aus der gesetzlichen Rentenversicherung.</span></span></label>
+        <div class="ctrl">
+          <select id="kinder26">
+            <option>0</option><option selected>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          </select>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Einkommen &amp; Steuern</legend>
+      <div class="row">
+        <span class="lbl">Sind Sie kirchensteuerpflichtig?</span>
+        <div class="radio-group" role="radiogroup" aria-label="Kirchensteuer">
+          <input type="radio" name="kirche" id="ki1" value="ja" checked><label for="ki1">ja</label>
+          <input type="radio" name="kirche" id="ki2" value="nein"><label for="ki2">nein</label>
+        </div>
+      </div>
+      <div class="row">
+        <label class="lbl" for="bundesland">In welchem Bundesland wohnen Sie?</label>
+        <div class="ctrl">
+          <select id="bundesland">
+            <option>Baden-Württemberg</option><option selected>Bayern</option><option>Berlin</option>
+            <option>Brandenburg</option><option>Bremen</option><option>Hamburg</option><option>Hessen</option>
+            <option>Mecklenburg-Vorpommern</option><option>Niedersachsen</option><option>Nordrhein-Westfalen</option>
+            <option>Rheinland-Pfalz</option><option>Saarland</option><option>Sachsen</option>
+            <option>Sachsen-Anhalt</option><option>Schleswig-Holstein</option><option>Thüringen</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <label class="lbl" for="zusatz">Zusatzbeitrag GKV<span class="hint-i" tabindex="0">i<span class="tip">Kassenindividueller Zusatzbeitrag Ihrer gesetzlichen Krankenkasse. Durchschnitt 2025: 2,5&nbsp;%.</span></span></label>
+        <div class="ctrl">
+          <input type="number" id="zusatz" min="0" max="4" step="0.1" value="2.5"> <span class="unit">%</span>
+          <input type="range" id="zusatz-r" min="0" max="4" step="0.1" value="2.5" aria-hidden="true" tabindex="-1">
+        </div>
+      </div>
+      <div class="row">
+        <label class="lbl" for="brutto">Bruttoverdienst im Monat</label>
+        <div class="ctrl">
+          <input type="number" id="brutto" min="500" max="10000" step="50" value="2000"> <span class="unit">€</span>
+          <input type="range" id="brutto-r" min="500" max="10000" step="50" value="2000" aria-hidden="true" tabindex="-1">
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Absicherung</legend>
+      <div class="row">
+        <label class="lbl" for="wunsch">Versorgungswunsch pro Monat<span class="hint-i" tabindex="0">i<span class="tip">Gewünschtes monatliches Versorgungsniveau der Hinterbliebenen. Bei 0&nbsp;€ wird Ihr Nettoeinkommen als Bedarf angesetzt.</span></span></label>
+        <div class="ctrl">
+          <input type="number" id="wunsch" min="0" max="10000" step="50" value="0"> <span class="unit">€</span>
+          <input type="range" id="wunsch-r" min="0" max="10000" step="50" value="0" aria-hidden="true" tabindex="-1">
+        </div>
+      </div>
+      <div class="row">
+        <label class="lbl" for="dauer">Versicherungsdauer<span class="hint-i" tabindex="0">i<span class="tip">Zeitraum, für den die Hinterbliebenen abgesichert sein sollen – z.&nbsp;B. bis die Kinder auf eigenen Beinen stehen oder die Immobilie abbezahlt ist.</span></span></label>
+        <div class="ctrl">
+          <input type="number" id="dauer" min="5" max="40" step="1" value="25"> <span class="unit">Jahre</span>
+          <input type="range" id="dauer-r" min="5" max="40" step="1" value="25" aria-hidden="true" tabindex="-1">
+        </div>
+      </div>
+      <div class="row">
+        <label class="lbl" for="zins">Zinssatz<span class="hint-i" tabindex="0">i<span class="tip">Angenommene Verzinsung des Kapitals während der Entnahmephase.</span></span></label>
+        <div class="ctrl">
+          <input type="number" id="zins" min="0" max="6" step="0.25" value="2"> <span class="unit">%</span>
+          <input type="range" id="zins-r" min="0" max="6" step="0.25" value="2" aria-hidden="true" tabindex="-1">
+        </div>
+      </div>
+      <div class="row">
+        <span class="lbl">Besteht bereits anderweitiger Versicherungsschutz?</span>
+        <div class="radio-group" role="radiogroup" aria-label="Anderweitiger Versicherungsschutz">
+          <input type="radio" name="bestand" id="b1" value="ja"><label for="b1">ja</label>
+          <input type="radio" name="bestand" id="b2" value="nein" checked><label for="b2">nein</label>
+        </div>
+      </div>
+      <div class="row subrow" id="row-bestand">
+        <label class="lbl" for="bestandsumme">in folgender Höhe (Versicherungssumme)</label>
+        <div class="ctrl">
+          <input type="number" id="bestandsumme" min="0" max="2000000" step="1000" value="0"> <span class="unit">€</span>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+  <!-- ==================== Ergebnisse ==================== -->
+  <aside class="results" aria-live="polite">
+    <div class="kpi">
+      <div class="kpi-label">Ihre monatliche Versorgungslücke*</div>
+      <div class="kpi-value" id="out-luecke">–</div>
+      <div class="kpi-sub" id="out-luecke-sub"></div>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi kpi2">
+        <div class="kpi-label">Erforderliches Kapital*</div>
+        <div class="kpi-value" id="out-kapital">–</div>
+      </div>
+      <div class="kpi kpi2" style="background: var(--eisblau-d3);">
+        <div class="kpi-label">Gesetzliche Hinterbliebenenrente*</div>
+        <div class="kpi-value" id="out-hr">–</div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h3>Ihre Versorgungssituation</h3>
+      <svg id="chart" viewBox="0 0 440 260" width="100%" role="img" aria-label="Balkendiagramm: Nettoeinkommen im Vergleich zu Hinterbliebenenrente und Versorgungslücke"></svg>
+      <div class="legend">
+        <span><i style="background: var(--eisblau-h);"></i>Netto/Wunsch</span>
+        <span><i style="background: var(--gruen-d3);"></i>Hinterbliebenenrente</span>
+        <span><i style="background: var(--dunkelrot);"></i>Versorgungslücke</span>
+      </div>
+    </div>
+
+    <table class="detail">
+      <thead><tr><th>Bezeichnung</th><th>Versorgungssituation</th></tr></thead>
+      <tbody>
+        <tr><td>Nettoeinkommen</td><td id="t-netto">–</td></tr>
+        <tr><td>Witwen-/Witwerrente*</td><td id="t-witwe">–</td></tr>
+        <tr><td>Waisenrente*</td><td id="t-waise">–</td></tr>
+        <tr><td>Versorgungslücke</td><td id="t-luecke">–</td></tr>
+        <tr><td>eigene Versorgung mtl.</td><td id="t-eigene">–</td></tr>
+        <tr><td>tatsächliche Versorgungslücke</td><td id="t-tat">–</td></tr>
+        <tr><td>Zinssatz</td><td id="t-zins">–</td></tr>
+        <tr><td>Versicherungsdauer</td><td id="t-dauer">–</td></tr>
+        <tr class="total"><td>Erforderliches Kapital</td><td id="t-kapital">–</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note-box" id="witwen-note"></div>
+
+    <a class="cta" href="https://www.ergo.de/de/Produkte/Lebensversicherung/Risikolebensversicherung" target="_blank" rel="noopener">
+      Jetzt Beitrag berechnen
+      <small>zur ERGO Risikolebensversicherung – Online-Rechner auf ergo.de</small>
+    </a>
+
+    <div class="footnotes">
+      <p>*&nbsp;Der Rechner ist lediglich ein Hilfsmittel und kann eine qualifizierte Beratung nicht ersetzen.
+         Für die Ergebnisse kann daher keine Gewähr übernommen werden.</p>
+      <p>Nettoeinkommen näherungsweise ermittelt (Steuerklasse&nbsp;III, Einkommensteuertarif 2025,
+         Sozialversicherungssätze 2025). Gesetzliche Hinterbliebenenrenten überschlägig berechnet.</p>
+    </div>
+  </aside>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p><strong>Hinweis:</strong> Unverbindliches Rechenbeispiel. Die tatsächlichen gesetzlichen Ansprüche
+       hängen vom individuellen Versicherungsverlauf ab und können bei der Deutschen Rentenversicherung
+       erfragt werden.</p>
+    <p>© <span id="jahr"></span> – RLV Bedarfsrechner (Demo im ERGO Corporate Design)</p>
+  </div>
+</footer>
+
+<script>
+"use strict";
+/* ============================================================
+   Rechenlogik – kalibriert am Original
+   (Dialog Bedarfsrechner RLV / Hinterbliebenenrente)
+   ============================================================ */
+
+const EUR0 = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+
+function fmt(v) { return EUR0.format(Math.round(v)); }
+
+/* Einkommensteuer-Grundtarif 2025 (§32a EStG), x = zvE in € */
+function est2025(x) {
+  x = Math.floor(x);
+  if (x <= 12096) return 0;
+  if (x <= 17443) { const y = (x - 12096) / 10000; return Math.floor((932.30 * y + 1400) * y); }
+  if (x <= 68480) { const z = (x - 17443) / 10000; return Math.floor((176.64 * z + 2397) * z + 1015.13); }
+  if (x <= 277825) return Math.floor(0.42 * x - 10911.92);
+  return Math.floor(0.45 * x - 19246.67);
+}
+
+/* Nettoeinkommen (Näherung, Steuerklasse III wie im Original) */
+function netto(brutto, zusatzPct, kirche, bundesland, kinderZahl) {
+  const bbgKV = 5512.50, bbgRV = 8050;      // BBG 2025 (monatlich)
+  const kvBase = Math.min(brutto, bbgKV);
+  const rvBase = Math.min(brutto, bbgRV);
+  const kv  = kvBase * (0.073 + zusatzPct / 200);
+  let pvSatz = 0.018 + (kinderZahl > 0 ? 0 : 0.006);   // AN-Anteil + Kinderlosenzuschlag
+  if (bundesland === 'Sachsen') pvSatz += 0.005;
+  const pv  = kvBase * pvSatz;
+  const rv  = rvBase * 0.093;
+  const alv = rvBase * 0.013;
+  const sv  = kv + pv + rv + alv;
+
+  const vsp = (rv + kv + pv) * 12;                      // Vorsorgepauschale (Näherung)
+  const zvE = Math.max(0, brutto * 12 - vsp - 1230 - 36);
+  const lst = est2025(zvE / 2) * 2 / 12;                // Splitting (StKl III)
+
+  let kist = 0;
+  if (kirche) {
+    const zvEk = Math.max(0, zvE - kinderZahl * 9600);  // Kinderfreibeträge f. KiSt
+    const satz = (bundesland === 'Bayern' || bundesland === 'Baden-Württemberg') ? 0.08 : 0.09;
+    kist = est2025(zvEk / 2) * 2 * satz / 12;
+  }
+  return { netto: brutto - sv - lst - kist, sv, lst, kist };
+}
+
+/* Hochgerechnete Rente des Verstorbenen – am Original kalibriert
+   (Stützstellen: 165/268/180/311 € kleine Witwenrente) */
+function renteVerstorbener(alter, brutto) {
+  const a = Math.min(Math.max(alter, 18), 60);
+  const b = Math.min(Math.max(brutto, 500), 8000);
+  const r = 385.09 + 0.0583636 * b - 4.72727 * a + 0.00509091 * b * a;
+  return Math.max(0, r);
+}
+
+/* Rentenbarwertfaktor: monatliche vorschüssige Rente über T Jahre,
+   effektiver Jahreszins z  (identisch zum Original: Faktor 236,82 bei 2 % / 25 J.) */
+function barwertfaktor(zinsPct, jahre) {
+  const z = zinsPct / 100;
+  if (z <= 0) return jahre * 12;
+  const im = Math.pow(1 + z, 1 / 12) - 1;
+  return (1 - Math.pow(1 + z, -jahre)) / im * (1 + im);
+}
+
+function berechne(inp) {
+  const n = netto(inp.brutto, inp.zusatz, inp.kirche, inp.bundesland, inp.kinderZahl);
+  const R = renteVerstorbener(inp.alter, inp.brutto);
+
+  /* großes oder kleines Witwenrecht */
+  const geburtsjahr = new Date().getFullYear() - inp.alter;
+  const altesRecht = inp.eheJahr <= 2001 && geburtsjahr < 1962;
+  const grosse = inp.kinderZahl > 0 || inp.epAlter >= 45 + 8 / 12;
+  const witwenSatz = grosse ? (altesRecht ? 0.60 : 0.55) : 0.25;
+
+  const witwe = R * witwenSatz;
+  const waise = R * 0.10 * inp.kinder26;               // Halbwaisenrente je Kind
+  const hr = Math.min(witwe + waise, R);               // Deckelung
+
+  const basis = inp.wunsch > 0 ? inp.wunsch : n.netto;
+  const luecke = Math.max(0, basis - hr);
+
+  const af = barwertfaktor(inp.zins, inp.dauer);
+  const eigene = inp.bestand ? inp.bestandsumme / af : 0;
+  const tat = Math.max(0, luecke - eigene);
+  const kapital = tat * af;
+
+  return { netto: n.netto, R, witwe, waise, hr, basis, luecke, eigene, tat, kapital, grosse, altesRecht };
+}
+
+/* ============================================================
+   UI
+   ============================================================ */
+const $ = (s) => document.querySelector(s);
+
+function lesen() {
+  const kinderJa = $('#k1').checked;
+  return {
+    alter: +$('#alter').value || 29,
+    epAlter: +$('#ep-alter').value || 29,
+    eheJahr: +$('#ehejahr').value || 2019,
+    kinderZahl: kinderJa ? (+$('#kinderzahl').value || 0) : 0,
+    kinder26: kinderJa ? (+$('#kinder26').value || 0) : 0,
+    kirche: $('#ki1').checked,
+    bundesland: $('#bundesland').value,
+    zusatz: +$('#zusatz').value || 0,
+    brutto: +$('#brutto').value || 0,
+    wunsch: +$('#wunsch').value || 0,
+    dauer: +$('#dauer').value || 25,
+    zins: +$('#zins').value || 0,
+    bestand: $('#b1').checked,
+    bestandsumme: +$('#bestandsumme').value || 0
+  };
+}
+
+function zeichneChart(erg) {
+  const svg = $('#chart');
+  const W = 440, H = 260, padL = 56, padB = 34, padT = 12;
+  const max = Math.max(erg.basis, erg.hr + erg.luecke, 1);
+  const scale = (H - padB - padT) / max;
+  const y0 = H - padB;
+  const bw = 110, x1 = padL + 40, x2 = padL + 220;
+
+  let s = '';
+  /* Gitter + Achsenbeschriftung */
+  const step = max > 4000 ? 1000 : max > 2000 ? 500 : 250;
+  for (let v = 0; v <= max; v += step) {
+    const y = y0 - v * scale;
+    s += `<line x1="${padL}" y1="${y}" x2="${W - 10}" y2="${y}" stroke="#D9D5C7" stroke-width="1"/>`;
+    s += `<text x="${padL - 6}" y="${y + 4}" text-anchor="end" font-size="11" fill="#545241">${(v / 1000).toLocaleString('de-DE')}k€</text>`;
+  }
+  /* Balken 1: Netto/Wunsch */
+  const h1 = erg.basis * scale;
+  s += `<rect x="${x1}" y="${y0 - h1}" width="${bw}" height="${Math.max(h1,1)}" fill="#CCEBED"/>`;
+  if (h1 > 26) s += `<text x="${x1 + bw / 2}" y="${y0 - h1 / 2 + 4}" text-anchor="middle" font-size="13" fill="#1a1a1a" font-weight="bold">${fmt(erg.basis)}</text>`;
+  /* Balken 2: HR + Lücke */
+  const h2a = erg.hr * scale, h2b = erg.luecke * scale;
+  s += `<rect x="${x2}" y="${y0 - h2a}" width="${bw}" height="${Math.max(h2a,1)}" fill="#009284"/>`;
+  if (h2a > 26) s += `<text x="${x2 + bw / 2}" y="${y0 - h2a / 2 + 4}" text-anchor="middle" font-size="13" fill="#fff" font-weight="bold">${fmt(erg.hr)}</text>`;
+  s += `<rect x="${x2}" y="${y0 - h2a - h2b}" width="${bw}" height="${Math.max(h2b,1)}" fill="#8E0038"/>`;
+  if (h2b > 26) s += `<text x="${x2 + bw / 2}" y="${y0 - h2a - h2b / 2 + 4}" text-anchor="middle" font-size="13" fill="#fff" font-weight="bold">${fmt(erg.luecke)}</text>`;
+  /* Grundlinie + Labels */
+  s += `<line x1="${padL}" y1="${y0}" x2="${W - 10}" y2="${y0}" stroke="#545241" stroke-width="1.5"/>`;
+  s += `<text x="${x1 + bw / 2}" y="${y0 + 18}" text-anchor="middle" font-size="12" fill="#545241">Netto/Wunsch</text>`;
+  s += `<text x="${x2 + bw / 2}" y="${y0 + 18}" text-anchor="middle" font-size="12" fill="#545241">HR-Rente/Lücke</text>`;
+  svg.innerHTML = s;
+}
+
+function update() {
+  const inp = lesen();
+  const erg = berechne(inp);
+
+  $('#out-luecke').textContent = fmt(erg.tat) + ' mtl.';
+  $('#out-luecke-sub').textContent = inp.wunsch > 0
+    ? 'bezogen auf Ihren Versorgungswunsch von ' + fmt(inp.wunsch)
+    : 'bezogen auf Ihr Nettoeinkommen von ' + fmt(erg.netto);
+  $('#out-kapital').textContent = fmt(erg.kapital);
+  $('#out-hr').textContent = fmt(erg.hr) + ' mtl.';
+
+  $('#t-netto').textContent  = fmt(erg.netto);
+  $('#t-witwe').textContent  = fmt(erg.witwe);
+  $('#t-waise').textContent  = fmt(erg.waise);
+  $('#t-luecke').textContent = fmt(erg.luecke);
+  $('#t-eigene').textContent = fmt(erg.eigene);
+  $('#t-tat').textContent    = fmt(erg.tat);
+  $('#t-zins').textContent   = inp.zins.toLocaleString('de-DE', { minimumFractionDigits: 2 }) + ' %';
+  $('#t-dauer').textContent  = inp.dauer + ' Jahre';
+  $('#t-kapital').textContent = fmt(erg.kapital);
+
+  $('#witwen-note').innerHTML = erg.grosse
+    ? (erg.altesRecht
+        ? '<strong>Große Witwen-/Witwerrente (altes Recht):</strong> Bei Eheschließung vor 2002 und Geburt vor 1962 beträgt die Witwen-/Witwerrente 60&nbsp;% der Rente des Verstorbenen.'
+        : '<strong>Große Witwen-/Witwerrente:</strong> Für Ehepaare, die ein Kind erziehen oder bei denen der hinterbliebene Partner mindestens 45&nbsp;Jahre und 8&nbsp;Monate alt ist, beträgt die Witwen-/Witwerrente 55&nbsp;% der Rente des Verstorbenen.')
+    : '<strong>Kleine Witwen-/Witwerrente:</strong> Hinterbliebene, die beim Tod des Ehepartners noch nicht 45&nbsp;Jahre und 8&nbsp;Monate alt sind und keine Kinder haben, erhalten die kleine Witwen-/Witwerrente. Sie beträgt 25&nbsp;% der Rente des Verstorbenen und ist auf 24&nbsp;Monate befristet.';
+
+  zeichneChart(erg);
+}
+
+/* Slider <-> Zahlenfeld koppeln */
+[['alter','alter-r'],['ep-alter','ep-alter-r'],['zusatz','zusatz-r'],['brutto','brutto-r'],['wunsch','wunsch-r'],['dauer','dauer-r'],['zins','zins-r']]
+.forEach(([a, b]) => {
+  const ea = document.getElementById(a), eb = document.getElementById(b);
+  ea.addEventListener('input', () => { eb.value = ea.value; update(); });
+  eb.addEventListener('input', () => { ea.value = eb.value; update(); });
+});
+
+/* Sichtbarkeit Unterfragen */
+function toggleSubrows() {
+  const kinderJa = $('#k1').checked;
+  $('#row-kinderzahl').classList.toggle('visible', kinderJa);
+  $('#row-kinder26').classList.toggle('visible', kinderJa);
+  $('#row-bestand').classList.toggle('visible', $('#b1').checked);
+}
+document.querySelectorAll('#calc-form input, #calc-form select').forEach(el => {
+  el.addEventListener('change', () => { toggleSubrows(); update(); });
+});
+
+document.getElementById('jahr').textContent = new Date().getFullYear();
+toggleSubrows();
+update();
+</script>
+</body>
+</html>
